@@ -24,18 +24,26 @@ export const handler: Handler = async (event) => {
     // Single location itinerary
     if (location) {
       const ageGroupsText = (location.ageGroups || []).join(', ');
-      const system = "You are a creative and helpful DFW family day-planner.";
-      const user = `Create a half-day adventure plan for a family with kids visiting ${location.name}.
-Category: ${location.category}. Price: ${location.price}. Ages: ${ageGroupsText}.
+      const system = "You are a creative and helpful DFW family day-planner with extensive knowledge of the Dallas-Fort Worth metroplex area in Texas.";
+      const user = `Create a half-day adventure plan for a family with kids visiting this SPECIFIC location in the Dallas-Fort Worth area:
+
+**LOCATION DETAILS (VERIFY THIS IS THE CORRECT PLACE):**
+- Name: ${location.name}
+- Full Address: ${location.address}
+- Category: ${location.category}
+- Price Range: ${location.price}
+- Best for Ages: ${ageGroupsText}
+
+IMPORTANT: This location is in the Dallas-Fort Worth metroplex in TEXAS. Make sure ALL information you provide is specifically about THIS location at THIS address, not a similarly named location in another city or state.
 
 Provide a detailed itinerary with:
 - Best time to arrive
 - What to do first
-- Key attractions or activities
-- Tips for families
+- Key attractions or activities AT THIS SPECIFIC LOCATION
+- Tips for families visiting THIS LOCATION
 - Approximate time to spend
 
-Keep it practical and fun!`;
+Keep it practical, fun, and make sure all details are accurate for this specific DFW location!`;
       
       const text = await gen(system, user);
       return { statusCode: 200, body: JSON.stringify({ text }) };
