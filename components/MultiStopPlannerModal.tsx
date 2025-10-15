@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Location } from '../types';
-import { generateMultiStopItinerary } from '../services/geminiService';
 import { XIcon, WandSparklesIcon, ArrowRightIcon, LoadingSpinner } from './Icons';
 
 interface MultiStopPlannerModalProps {
@@ -91,16 +90,40 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
     setError(null);
     setResults(null);
 
-    let mealPreference = 'No specific meal stop is needed.';
-    if (options.mealType !== 'none') {
-        mealPreference = `Please include a stop for a ${options.mealType} meal with a price range of ${options.mealPrice}.`;
-    }
-    const payload = { ...options, mealPreference };
-    
     try {
-        const result = await generateMultiStopItinerary(payload, locations);
-        setResults(result);
+        // Build a detailed prompt with all the user's preferences
+        let mealPreference = 'No specific meal stop is needed.';
+        if (options.mealType !== 'none') {
+            mealPreference = `Please include a stop for a ${options.mealType} meal with a price range of ${options.mealPrice}.`;
+        }
+
+        const promptData = {
+            numAdults: options.numAdults,
+            numKids: options.numKids,
+            timeAvailable: options.timeAvailable,
+            budget: options.budget,
+            mealPreference: mealPreference
+        };
+
+        // Call the netlify function with the enhanced prompt
+        const res = await fetch('/.netlify/functions/itinerary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                multiStopOptions: promptData,
+                locations: locations 
+            }),
+        });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`API Error: ${errorText}`);
+        }
+
+        const json = await res.json();
+        setResults(json.text);
     } catch (e: any) {
+        console.error('Error generating itinerary:', e);
         setError(e.message || "An unknown error occurred.");
     } finally {
         setIsLoading(false);
@@ -178,7 +201,17 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
             </div>
           )}
 
-          {error && <p className="text-red-500 text-center">{error}</p>}
+          {error && (
+            <div className="text-center p-4">
+                <p className="text-red-500 mb-2">Error: {error}</p>
+                <button 
+                    onClick={() => setError(null)} 
+                    className="text-indigo-600 hover:text-indigo-700 text-sm underline"
+                >
+                    Try Again
+                </button>
+            </div>
+          )}
           
           {results && <MultiStopItineraryResult htmlContent={results} options={options} locations={locations} />}
         </div>
@@ -192,22 +225,5 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
     </div>
   );
 };
-
-async function onGenerate(selected: Location[], setError: any, setLoading: any, setItinerary: any) {
-  try {
-    setError('');
-    setLoading(true);
-    if (!selected || selected.length === 0) {
-      setError('Please pick 1–5 places to include.');
-      return;
-    }
-    const text = await generateMultiStopItinerary(selected);
-    setItinerary(text);
-  } catch (e: any) {
-    setError(e.message ?? 'Failed to generate itinerary.');
-  } finally {
-    setLoading(false);
-  }
-}
 
 export default MultiStopPlannerModal;

@@ -75,9 +75,9 @@ const LocationModal: React.FC<LocationModalProps> = ({ location, onClose, userCo
       if (userCoords) {
           const distance = calculateDistance(userCoords.lat, userCoords.lng, location.lat, location.lng);
           const time = estimateDriveTime(distance);
-          return <div className="flex items-start space-x-3"><CarIcon className="text-teal-500 mt-1 shrink-0" /><span>Approx. <b>{time} min drive</b> from your location.</span></div>;
+          return <div className="flex items-start space-x-3"><CarIcon className="text-teal-500 mt-1 shrink-0 w-5 h-5" /><span>Approx. <b>{time} min drive</b> from your location.</span></div>;
       }
-      return <div className="flex items-start space-x-3"><CrosshairIcon className="text-gray-400 mt-1 shrink-0" /><span className="text-gray-500 dark:text-gray-400">Enable location services to get drive times.</span></div>;
+      return <div className="flex items-start space-x-3"><CrosshairIcon className="text-gray-400 mt-1 shrink-0 w-5 h-5" /><span className="text-gray-500 dark:text-gray-400">Enable location services to get drive times.</span></div>;
     }
 
     const getTicketInfoHTML = () => {
@@ -87,7 +87,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ location, onClose, userCo
           .map(([key, value]) => `<b class="capitalize">${key}:</b> ${typeof value === 'number' ? '$' + value : value}`)
           .join(' &nbsp;•&nbsp; ');
       const note = location.ticketInfo.note ? ` <span class="text-gray-500 dark:text-gray-400 text-sm">(${location.ticketInfo.note})</span>` : '';
-      return <div className="flex items-start space-x-3"><TicketIcon className="text-teal-500 mt-1 shrink-0" /><span dangerouslySetInnerHTML={{ __html: `${pricingDetails}${note}` }} /></div>
+      return <div className="flex items-start space-x-3"><TicketIcon className="text-teal-500 mt-1 shrink-0 w-5 h-5" /><span dangerouslySetInnerHTML={{ __html: `${pricingDetails}${note}` }} /></div>
     }
 
 
@@ -151,10 +151,10 @@ const LocationModal: React.FC<LocationModalProps> = ({ location, onClose, userCo
             <div className="mt-6">
                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 border-b dark:border-gray-600 pb-2 mb-3">Good to Know</h3>
                <div className="space-y-3 text-gray-700 dark:text-gray-300">
-                   <div className="flex items-start space-x-3"><MapPinIcon className="text-teal-500 mt-1 shrink-0"/><span>{location.address}</span></div>
+                   <div className="flex items-start space-x-3"><MapPinIcon className="text-teal-500 mt-1 shrink-0 w-5 h-5"/><span>{location.address}</span></div>
                    {getDriveTimeHTML()}
                    {getTicketInfoHTML()}
-                   <div className="flex items-start space-x-3"><UsersIcon className="text-teal-500 mt-1 shrink-0" /><span>Best for: {location.ageGroups.join(', ')}</span></div>
+                   <div className="flex items-start space-x-3"><UsersIcon className="text-teal-500 mt-1 shrink-0 w-5 h-5" /><span>Best for: {location.ageGroups.join(', ')}</span></div>
                </div>
             </div>
 
