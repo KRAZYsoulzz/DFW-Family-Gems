@@ -21,7 +21,10 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onSelect }) => {
       onClick={() => onSelect(location.id)}
     >
       <div className="flex items-center space-x-4">
-        <img src={location.image} alt={location.name} className="w-20 h-20 rounded-md object-cover flex-shrink-0" />
+        <img src={location.image || '/images/fallback.png'} alt={location.name} className="w-20 h-20 rounded-md object-cover flex-shrink-0"
+          loading="lazy"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/fallback.png'; }}
+        />
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-gray-800 dark:text-gray-100 truncate">{location.name}</h3>
           <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">

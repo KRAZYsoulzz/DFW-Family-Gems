@@ -193,4 +193,21 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
   );
 };
 
+async function onGenerate(selected: Location[], setError: any, setLoading: any, setItinerary: any) {
+  try {
+    setError('');
+    setLoading(true);
+    if (!selected || selected.length === 0) {
+      setError('Please pick 1–5 places to include.');
+      return;
+    }
+    const text = await generateMultiStopItinerary(selected);
+    setItinerary(text);
+  } catch (e: any) {
+    setError(e.message ?? 'Failed to generate itinerary.');
+  } finally {
+    setLoading(false);
+  }
+}
+
 export default MultiStopPlannerModal;

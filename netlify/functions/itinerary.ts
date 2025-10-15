@@ -19,11 +19,8 @@ Category: ${loc.category}. Price: ${loc.price}. Ages: ${ageGroupsText}.`;
 
     const gen = async (sys: string, usr: string) => {
       const payload = { contents: [{ role: "user", parts: [{ text: sys + "\n\n" + usr }]}] };
-      const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!resp.ok) throw new Error(await resp.text());
       const data = await resp.json();
       const text = (data?.candidates?.[0]?.content?.parts || []).map((p: any) => p.text || "").join("") || "No content.";
