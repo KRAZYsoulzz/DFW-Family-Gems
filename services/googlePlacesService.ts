@@ -55,19 +55,23 @@ export async function fetchLocationPhotos(
   locationId: number,
   address: string
 ): Promise<string[]> {
+  console.log(`[Google Places] Attempting to fetch photos for: ${locationName}`);
+  
   // Check cache first
   const cache = loadCache();
   const cacheKey = `${locationId}`;
   
   if (cache[cacheKey] && isCacheValid(cache[cacheKey].timestamp)) {
-    console.log(`Using cached photos for ${locationName}`);
+    console.log(`[Google Places] ✓ Using cached photos for ${locationName}`);
     return cache[cacheKey].photos;
   }
 
   if (!GOOGLE_PLACES_API_KEY) {
-    console.warn('Google Places API key not set');
+    console.error('[Google Places] ✗ API key not set!');
     return ['/images/fallback.png', '/images/fallback.png', '/images/fallback.png'];
   }
+
+  console.log(`[Google Places] API Key found:`, GOOGLE_PLACES_API_KEY.substring(0, 10) + '...');
 
   try {
     // Step 1: Search for the place using Text Search
