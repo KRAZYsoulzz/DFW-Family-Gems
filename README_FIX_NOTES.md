@@ -1,7 +1,5 @@
-
-# Image Loading Fixes
-
-- Replaced broken Base64 data URLs in `constants.ts` with static paths: `/images/fallback.png`.
-- Added a placeholder image at `public/images/fallback.png` that loads locally in dev and in production builds.
-- (Optional) For real venue images, drop JPG/PNG files into `public/images/` and replace the `image:` and `gallery:` fields accordingly.
-- Consider adding `onError` fallbacks on `<img>` tags in `LocationCard.tsx` and `LocationModal.tsx` for extra resilience.
+# Netlify & Image Fixes
+- Move Gemini API call to Netlify Function at `/.netlify/functions/itinerary` (server-side uses GEMINI_API_KEY).
+- Client calls the function; no API key in bundle.
+- Added `netlify.toml` and `@netlify/functions` dependency.
+- Replaced broken Base64 images with `/images/fallback.png` and added onError fallbacks.
