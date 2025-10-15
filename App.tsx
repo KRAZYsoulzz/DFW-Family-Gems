@@ -46,6 +46,8 @@ function App() {
     const fetchPhotos = async () => {
       try {
         await prefetchAllLocationPhotos(locations);
+        // Mark that we've completed the initial fetch
+        localStorage.setItem('photosFetched', 'true');
         // Force a re-render after photos are loaded
         window.location.reload();
       } catch (error) {
@@ -53,9 +55,11 @@ function App() {
       }
     };
     
-    // Only fetch if we don't have cached photos
+    // Only fetch if we haven't already fetched in this session
     const hasCache = localStorage.getItem('googlePlacesPhotos');
-    if (!hasCache) {
+    const hasFetched = localStorage.getItem('photosFetched');
+    
+    if (!hasCache && !hasFetched) {
       fetchPhotos();
     }
   }, []);
