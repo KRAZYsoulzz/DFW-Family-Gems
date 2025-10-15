@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Location, FilterState } from './types';
 import { locations as allLocations } from './constants';
+import { prefetchAllLocationPhotos } from './services/googlePlacesService';
 import Map from './components/Map';
 import Sidebar from './components/Sidebar';
 import LocationModal from './components/LocationModal';
@@ -39,6 +40,25 @@ function App() {
     root.classList.add(theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  // Prefetch Google Places photos on app load
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        await prefetchAllLocationPhotos(locations);
+        // Force a re-render after photos are loaded
+        window.location.reload();
+      } catch (error) {
+        console.error('Error prefetching photos:', error);
+      }
+    };
+    
+    // Only fetch if we don't have cached photos
+    const hasCache = localStorage.getItem('googlePlacesPhotos');
+    if (!hasCache) {
+      fetchPhotos();
+    }
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');

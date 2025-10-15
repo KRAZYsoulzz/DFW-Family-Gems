@@ -1,14 +1,26 @@
 import { Location } from './types';
-import { getLocationImages } from './services/imageMapping';
+import { getCachedPhotos } from './services/googlePlacesService';
 
-// Helper to build location with images
+// Helper to build location with Google Places images (or fallback)
 const buildLocation = (id: number, data: Omit<Location, 'image' | 'gallery'>): Location => {
-  const images = getLocationImages(id);
+  // Try to get cached photos from Google Places
+  const cachedPhotos = getCachedPhotos(id);
+  
+  if (cachedPhotos && cachedPhotos.length > 0) {
+    return {
+      ...data,
+      id,
+      image: cachedPhotos[0],
+      gallery: cachedPhotos.slice(0, 4)
+    };
+  }
+  
+  // Fallback to placeholder until Google Places photos are loaded
   return {
     ...data,
     id,
-    image: images.main,
-    gallery: images.gallery
+    image: '/images/fallback.png',
+    gallery: ['/images/fallback.png', '/images/fallback.png', '/images/fallback.png']
   };
 };
 
