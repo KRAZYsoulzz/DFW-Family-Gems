@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFW Family Gems</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet.js for Mapping -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --popup-bg: #ffffff;
+            --popup-text: #374151;
+            --popup-tip-bg: #ffffff;
+            --popup-title-text: #111827;
+            --attribution-bg: rgba(255, 255, 255, 0.7);
+            --attribution-text: #333;
+        }
+
+        .dark {
+            --popup-bg: #374151; /* gray-700 */
+            --popup-text: #d1d5db; /* gray-300 */
+            --popup-tip-bg: #374151;
+            --popup-title-text: #f9fafb; /* gray-50 */
+            --attribution-bg: rgba(0, 0, 0, 0.7);
+            --attribution-text: #ddd;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Custom scrollbar for a cleaner look */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Leaflet custom popup styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: var(--popup-bg);
+            color: var(--popup-text);
+        }
+        .leaflet-popup-content b {
+            color: var(--popup-title-text);
+        }
+        .leaflet-popup-content {
+            margin: 13px 19px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .leaflet-popup-tip {
+            box-shadow: none;
+            background-color: var(--popup-tip-bg);
+        }
+        .leaflet-control-attribution {
+            background: var(--attribution-bg) !important;
+            color: var(--attribution-text) !important;
+        }
+        /* Star rating styling */
+        .star-rating .star {
+            color: #d1d5db; /* gray-300 */
+        }
+        .star-rating .star.filled {
+            color: #f59e0b; /* amber-500 */
+        }
+        /* Disable filter styling */
+        .filter-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Animation utilities */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+
+        @keyframes scaleIn { from { transform: scale(0.95); } to { transform: scale(1); } }
+        .animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.24.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 overflow-hidden">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root" class="relative h-screen w-screen flex"></div>
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
