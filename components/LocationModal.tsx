@@ -98,22 +98,18 @@ const LocationModal: React.FC<LocationModalProps> = ({ location, onClose, userCo
         onClick={(e) => e.stopPropagation()}
       >
          <div className="relative">
-            <img src={mainImage} alt={location.name} className="w-full h-56 object-cover rounded-t-2xl"
-             onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/fallback.png"; }}
-             />
+            <img src={mainImage} alt={location.name} className="w-full h-56 object-cover rounded-t-2xl" />
             <button onClick={onClose} className="absolute top-4 right-4 bg-white/70 dark:bg-gray-900/70 p-2 rounded-full text-gray-800 dark:text-gray-200 hover:bg-opacity-100 transition"><XIcon/></button>
          </div>
          {location.gallery && location.gallery.length > 0 && (
             <div className="p-4 bg-gray-50 dark:bg-gray-900/50 border-b dark:border-gray-700">
               <div className="flex space-x-2">
                 {location.gallery.map((imgUrl, index) => (
-                  <img
-                    key={index}
-                    src={imgUrl}
+                  <img 
+                    key={index} 
+                    src={imgUrl} 
                     alt={`${location.name} gallery image ${index + 1}`}
-                    className={`w-1/4 h-16 object-cover rounded-md border-2 cursor-pointer transition-all duration-150 ${mainImage === imgUrl ? 'border-teal-500' : 'border-transparent hover:border-teal-500/50'}`}
-                    loading="lazy"
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/images/fallback.png"; }}
+                    className={`w-1/4 h-16 object-cover rounded-md cursor-pointer border-2 transition-all ${mainImage === imgUrl ? 'border-teal-500' : 'border-transparent hover:border-teal-500/50'}`}
                     onClick={() => setMainImage(imgUrl)}
                   />
                 ))}
