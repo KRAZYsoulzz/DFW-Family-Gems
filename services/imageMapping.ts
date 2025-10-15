@@ -1,66 +1,436 @@
-import { Location } from './types';
-import { getLocationImages } from './services/imageMapping';
+// Curated image URLs for each location
+// Using high-quality images from Unsplash (direct links, no API needed)
 
-// Helper to build location with images
-const buildLocation = (id: number, data: Omit<Location, 'image' | 'gallery'>): Location => {
-  const images = getLocationImages(id);
-  return {
-    ...data,
-    id,
-    image: images.main,
-    gallery: images.gallery
-  };
+export interface LocationImages {
+  main: string;
+  gallery: string[];
+}
+
+export const locationImageMap: { [locationId: number]: LocationImages } = {
+  // Parks
+  1: { // Klyde Warren Park
+    main: "https://images.unsplash.com/photo-1597694434571-7a6b7b7e5f4f?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1597694434571-7a6b7b7e5f4f?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop"
+    ]
+  },
+  12: { // White Rock Lake Park
+    main: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800&h=600&fit=crop"
+    ]
+  },
+  15: { // Trinity Park
+    main: "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1598134493097-d2796bf0340d?w=800&h=600&fit=crop"
+    ]
+  },
+  18: { // River Legacy Parks
+    main: "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=800&h=600&fit=crop"
+    ]
+  },
+  20: { // Randol Mill Park
+    main: "https://images.unsplash.com/photo-1572023439658-f7edc9f5b02e?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1572023439658-f7edc9f5b02e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1604869515882-4d10fa4b0492?w=800&h=600&fit=crop"
+    ]
+  },
+  37: { // Fort Worth Water Gardens
+    main: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1548946526-f69e2424cf45?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&h=600&fit=crop"
+    ]
+  },
+  47: { // Eagle Mountain Lake Park
+    main: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1500964757637-c85e8a162699?w=800&h=600&fit=crop"
+    ]
+  },
+
+  // Museums
+  2: { // Perot Museum
+    main: "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=800&h=600&fit=crop"
+    ]
+  },
+  7: { // Dallas World Aquarium
+    main: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1544552866-d3ed42536cfd?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=800&h=600&fit=crop"
+    ]
+  },
+  13: { // Fort Worth Museum of Science
+    main: "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=600&fit=crop"
+    ]
+  },
+  25: { // National Videogame Museum
+    main: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=600&fit=crop"
+    ]
+  },
+  29: { // Sea Life Grapevine Aquarium
+    main: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1544552866-d3ed42536cfd?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560275619-4662e36fa65c?w=800&h=600&fit=crop"
+    ]
+  },
+  32: { // Kimbell Art Museum
+    main: "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580041065738-e72023775cdc?w=800&h=600&fit=crop"
+    ]
+  },
+  41: { // Amon Carter Museum
+    main: "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1577083300990-f0796012a626?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&h=600&fit=crop"
+    ]
+  },
+  44: { // The Modern Art Museum
+    main: "https://images.unsplash.com/photo-1577083300990-f0796012a626?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1577083300990-f0796012a626?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580041065738-e72023775cdc?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?w=800&h=600&fit=crop"
+    ]
+  },
+
+  // Outdoors & Gardens
+  3: { // Fort Worth Botanic Garden
+    main: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600077106724-946750eeaf3c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=800&h=600&fit=crop"
+    ]
+  },
+  8: { // Fort Worth Zoo
+    main: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1551817958-20c93c9f3fdbb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1540206395-68808572332f?w=800&h=600&fit=crop"
+    ]
+  },
+  10: { // Arbor Hills Nature Preserve
+    main: "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop"
+    ]
+  },
+  11: { // Dallas Arboretum
+    main: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1563789031959-4c02bcb41319?w=800&h=600&fit=crop"
+    ]
+  },
+  14: { // Sundance Square
+    main: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&h=600&fit=crop"
+    ]
+  },
+  19: { // Levitt Pavilion
+    main: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=800&h=600&fit=crop"
+    ]
+  },
+  21: { // Chandor Gardens
+    main: "https://images.unsplash.com/photo-1600077106724-946750eeaf3c?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1600077106724-946750eeaf3c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=800&h=600&fit=crop"
+    ]
+  },
+  22: { // Clark Gardens
+    main: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1563789031959-4c02bcb41319?w=800&h=600&fit=crop"
+    ]
+  },
+  26: { // Heard Natural Science Museum
+    main: "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800&h=600&fit=crop"
+    ]
+  },
+  33: { // The Shops at Clearfork
+    main: "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&h=600&fit=crop"
+    ]
+  },
+  38: { // Stockyards National Historic District
+    main: "https://images.unsplash.com/photo-1546971587-02375cbbdffb?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1546971587-02375cbbdffb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800&h=600&fit=crop"
+    ]
+  },
+  48: { // Dinosaur Valley State Park
+    main: "https://images.unsplash.com/photo-1497206365907-f5e630693df0?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1497206365907-f5e630693df0?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800&h=600&fit=crop"
+    ]
+  },
+  49: { // Fossil Rim Wildlife Center
+    main: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1551817958-20c93c9f3fdbb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1546429964-b965a7e4569f?w=800&h=600&fit=crop"
+    ]
+  },
+  50: { // Granbury City Beach Park
+    main: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800&h=600&fit=crop"
+    ]
+  },
+
+  // Playgrounds & Indoor
+  4: { // Adventure World Park
+    main: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1598134493097-d2796bf0340d?w=800&h=600&fit=crop"
+    ]
+  },
+  5: { // Crayola Experience
+    main: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?w=800&h=600&fit=crop"
+    ]
+  },
+  6: { // Hope Park
+    main: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop"
+    ]
+  },
+  9: { // Play Street Museum
+    main: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?w=800&h=600&fit=crop"
+    ]
+  },
+  16: { // Dream Park
+    main: "https://images.unsplash.com/photo-1598134493097-d2796bf0340d?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1598134493097-d2796bf0340d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop"
+    ]
+  },
+  28: { // LEGOLAND Discovery Center
+    main: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?w=800&h=600&fit=crop"
+    ]
+  },
+  31: { // Celebration Park
+    main: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1598134493097-d2796bf0340d?w=800&h=600&fit=crop"
+    ]
+  },
+  34: { // Parr Park
+    main: "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1598134493097-d2796bf0340d?w=800&h=600&fit=crop"
+    ]
+  },
+  43: { // Flight Deck Trampoline Park
+    main: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop"
+    ]
+  },
+  45: { // Main Event
+    main: "https://images.unsplash.com/photo-1580820267115-bfd8bacab3bf?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1580820267115-bfd8bacab3bf?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=600&fit=crop"
+    ]
+  },
+
+  // Waterparks
+  30: { // NRH2O Family Water Park
+    main: "https://images.unsplash.com/photo-1561212044-bac5ef688a07?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1561212044-bac5ef688a07?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1527933053326-89d1746b76b9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop"
+    ]
+  },
+  36: { // Epic Waters Indoor Waterpark
+    main: "https://images.unsplash.com/photo-1527933053326-89d1746b76b9?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1527933053326-89d1746b76b9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1561212044-bac5ef688a07?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop"
+    ]
+  },
+  39: { // Burger's Lake
+    main: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800&h=600&fit=crop"
+    ]
+  },
+  40: { // Benbrook Lake
+    main: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?w=800&h=600&fit=crop"
+    ]
+  },
+
+  // Attractions
+  17: { // Bureau of Engraving and Printing
+    main: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=800&h=600&fit=crop"
+    ]
+  },
+  23: { // Holland Lake Park
+    main: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=800&h=600&fit=crop"
+    ]
+  },
+  24: { // The National Vietnam War Museum
+    main: "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=600&fit=crop"
+    ]
+  },
+  27: { // Grapevine Vintage Railroad
+    main: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=800&h=600&fit=crop"
+    ]
+  },
+  35: { // Fritz Park Petting Farm
+    main: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560114928-40f1f1eb26a0?w=800&h=600&fit=crop"
+    ]
+  },
+  42: { // Texas Civil War Museum
+    main: "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1565191999001-551c187427bb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=600&fit=crop"
+    ]
+  },
+  46: { // D-BAT
+    main: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&h=600&fit=crop",
+    gallery: [
+      "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1627241561457-c4d85d3fef3b?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=800&h=600&fit=crop"
+    ]
+  }
 };
 
-export const locations: Location[] = [
-    buildLocation(1, { name: "Klyde Warren Park", category: "Park", lat: 32.7891, lng: -96.8015, address: "2012 Woodall Rodgers Fwy, Dallas, TX 75201", ageGroups: ["Toddlers", "Kids", "Teens"], price: "Free", hours: { all: "06:00-23:00" }, rating: 4.8, reviewCount: 1250, reviewHighlights: ["Great food trucks", "Clean and safe", "Splash pad is amazing"], tips: ["Check their website for free events.", "Pack a picnic to save money.", "The splash pad is a huge hit in the summer."], events: [{title: "Yoga in the Park", date: "Saturdays at 10 AM", description: "A free, all-levels yoga class on the lawn.", cost: "Free"}, {title: "Music on the Square", date: "Friday, Oct 17th at 7 PM", description: "Live performance by a local jazz trio.", cost: "Free"}] }),
-    buildLocation(2, { name: "Perot Museum of Nature and Science", category: "Museum", lat: 32.7877, lng: -96.8058, address: "2201 N Field St, Dallas, TX 75201", ageGroups: ["Kids", "Teens"], price: "$$$", ticketInfo: { Adult: 25, Youth: 18, Senior: 23 }, hours: { Mon: "10:00-17:00", Tue: "10:00-17:00", Wed: "10:00-17:00", Thu: "10:00-17:00", Fri: "10:00-17:00", Sat: "10:00-18:00", Sun: "11:00-17:00" }, rating: 4.9, reviewCount: 980, reviewHighlights: ["Kids museum is fantastic", "Very interactive exhibits", "Plan for a full day"], tips: ["Book tickets online in advance.", "The children's museum is perfect for kids under 5.", "Don't miss the earthquake simulator."] }),
-    buildLocation(3, { name: "Fort Worth Botanic Garden", category: "Outdoors", lat: 32.7397, lng: -97.3639, address: "3220 Botanic Garden Blvd, Fort Worth, TX 76107", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$", ticketInfo: { Adult: 12, Child: 6 }, hours: { all: "08:00-18:00" }, rating: 4.7, reviewCount: 750, reviewHighlights: ["Japanese Garden is a must-see", "Peaceful and beautiful", "Lots of walking"], tips: ["The Japanese Garden has a separate admission.", "Bring comfortable shoes.", "Feed the koi fish in the ponds."] }),
-    buildLocation(4, { name: "Adventure World Park", category: "Playground", lat: 32.9360, lng: -97.0789, address: "7451 Starnes Rd, North Richland Hills, TX 76182", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "06:00-22:00" }, rating: 4.9, reviewCount: 430, reviewHighlights: ["Great for all ages", "Soft rubber ground", "Can get crowded"], tips: ["The ground is a soft, rubbery material.", "Go on a weekday morning to avoid crowds.", "Clean restrooms and shaded picnic areas."] }),
-    buildLocation(5, { name: "Crayola Experience Plano", category: "Indoor", lat: 33.0818, lng: -96.8242, address: "6121 W Park Blvd, Plano, TX 75093", ageGroups: ["Toddlers", "Kids"], price: "$$$", ticketInfo: { General: 28.99 }, hours: { Mon: "10:00-18:00", Tue: "10:00-18:00", Wed: "10:00-18:00", Thu: "10:00-18:00", Fri: "10:00-20:00", Sat: "10:00-20:00", Sun: "11:00-18:00" }, rating: 4.5, reviewCount: 810, reviewHighlights: ["So many activities", "Perfect for rainy days", "A bit pricey"], tips: ["Great for a rainy or extremely hot day.", "Plan to spend at least 3-4 hours.", "You get to take home your creations."] }),
-    buildLocation(6, { name: "Hope Park", category: "Playground", lat: 33.0485, lng: -96.7978, address: "8000 McKinney Rd, Frisco, TX 75034", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "08:00-20:00" }, rating: 4.9, reviewCount: 650, reviewHighlights: ["Best splash pad", "Fully enclosed tot lot", "Something for everyone"], tips: ["Bring swimsuits and towels for the splash pad!", "The 'tot lot' is great for little runners.", "It's huge, so keep an eye on your kids."] }),
-    buildLocation(7, { name: "Dallas World Aquarium", category: "Museum", lat: 32.7836, lng: -96.8066, address: "1801 N Griffin St, Dallas, TX 75202", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$$", ticketInfo: { Adult: 29.95, Child: 19.95 }, hours: { all: "09:00-17:00" }, rating: 4.6, reviewCount: 1100, reviewHighlights: ["Immersive rainforest", "Long entry lines", "Shark tunnel is cool"], tips: ["Arrive early or on a weekday to avoid lines.", "Follow the recommended path.", "Don't miss the manatee feeding time."] }),
-    buildLocation(8, { name: "Fort Worth Zoo", category: "Outdoors", lat: 32.7210, lng: -97.3568, address: "1989 Colonial Pkwy, Fort Worth, TX 76110", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$$", ticketInfo: { Adult: 18, Child: 14 }, hours: { all: "10:00-17:00" }, rating: 4.8, reviewCount: 1500, reviewHighlights: ["Clean and well-maintained", "Texas Wild! exhibit is great", "Lots of shade"], tips: ["Buy tickets online.", "The train ride is a fun add-on.", "Half-price Wednesdays can be very crowded."] }),
-    buildLocation(9, { name: "Play Street Museum", category: "Indoor", lat: 33.0463, lng: -96.8281, address: "Multiple DFW Locations", ageGroups: ["Toddlers", "Kids"], price: "$$", ticketInfo: { Child: 13, note: "per session" }, hours: { all: "09:00-17:00" }, rating: 4.9, reviewCount: 320, reviewHighlights: ["Perfect for toddlers", "Clean and well-themed", "Must book session online"], tips: ["Reservations are required.", "Sessions are timed, so be punctual.", "Check their calendar for special events."] }),
-    buildLocation(10, { name: "Arbor Hills Nature Preserve", category: "Outdoors", lat: 33.0877, lng: -96.8622, address: "6701 W Parker Rd, Plano, TX 75093", ageGroups: ["Kids", "Teens"], price: "Free", hours: { all: "05:00-23:00" }, rating: 4.8, reviewCount: 950, reviewHighlights: ["Great hiking trails", "Observation tower views", "Playground for kids"], tips: ["Bring bug spray in the summer.", "The observation tower offers great views of Plano.", "Good spot for family photos."] }),
-    buildLocation(11, { name: "Dallas Arboretum and Botanical Garden", category: "Outdoors", lat: 32.8180, lng: -96.7169, address: "8525 Garland Rd, Dallas, TX 75218", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$", ticketInfo: { Adult: 20, Child: 12 }, hours: { all: "09:00-17:00" }, rating: 4.8, reviewCount: 1300, reviewHighlights: ["Beautiful seasonal displays", "Rory Meyers Children's Garden", "Great photo ops"], tips: ["The Children's Adventure Garden requires a separate ticket.", "Bring a wagon for little kids.", "Check for seasonal festivals like Dallas Blooms and Autumn at the Arboretum."], events: [{title: "Autumn at the Arboretum", date: "Through Nov 5th", description: "One of the nation's best pumpkin festivals with over 100,000 pumpkins, gourds and squash.", cost: "Included with general admission."}] }),
-    buildLocation(12, { name: "White Rock Lake Park", category: "Park", lat: 32.8250, lng: -96.7090, address: "8300 E Lawther Dr, Dallas, TX 75218", ageGroups: ["Toddlers", "Kids", "Teens"], price: "Free", hours: { all: "06:00-23:00" }, rating: 4.7, reviewCount: 900, reviewHighlights: ["Great for biking", "Lovely sunsets", "Playground near the Bath House"], tips: ["The main loop is over 9 miles long.", "Rent kayaks or paddleboards for fun on the water.", "The playground by the Bath House Cultural Center is a popular spot."] }),
-    buildLocation(13, { name: "Fort Worth Museum of Science and History", category: "Museum", lat: 32.7448, lng: -97.3702, address: "1600 Gendy St, Fort Worth, TX 76107", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$", ticketInfo: { Adult: 16, Child: 12 }, hours: { Tue:"10:00-17:00", Wed:"10:00-17:00", Thu:"10:00-17:00", Fri:"10:00-17:00", Sat:"10:00-17:00", Sun:"12:00-17:00", Mon:"Closed" }, rating: 4.6, reviewCount: 850, reviewHighlights: ["Children's museum inside", "DinoLabs is awesome", "IMAX theater is a plus"], tips: ["Great for younger kids (2-8).", "Check Noble Planetarium show times.", "Can be done in a few hours."] }),
-    buildLocation(14, { name: "Sundance Square", category: "Outdoors", lat: 32.7535, lng: -97.3323, address: "420 Main St, Fort Worth, TX 76102", ageGroups: ["Kids", "Teens"], price: "Free", hours: { all: "00:00-23:59" }, rating: 4.8, reviewCount: 1100, reviewHighlights: ["Beautiful fountains", "Great restaurants", "Clean and safe area"], tips: ["Kids love playing in the splash fountains in the summer.", "Often has free events and concerts.", "A great place for a family walk in the evening."] }),
-    buildLocation(15, { name: "Trinity Park", category: "Park", lat: 32.7500, lng: -97.3560, address: "2401 University Dr, Fort Worth, TX 76107", ageGroups: ["Toddlers", "Kids", "Teens"], price: "Free", hours: { all: "05:00-23:30" }, rating: 4.7, reviewCount: 950, reviewHighlights: ["Huge playground", "Miniature train ride", "Access to Trinity Trails"], tips: ["The Fort Worth Adventure Park playground is massive.", "The Trinity Park miniature train is a classic.", "Perfect for picnics and flying kites."] }),
-    buildLocation(16, { name: "Dream Park", category: "Playground", lat: 32.7512, lng: -97.3585, address: "2401 University Dr, Fort Worth, TX 76107", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "05:00-23:30" }, rating: 4.9, reviewCount: 500, reviewHighlights: ["Inclusive for all abilities", "So many things to do", "Can get very busy"], tips: ["Located inside Trinity Park.", "Designed to be accessible for children of all abilities.", "Rubber surfaces and lots of ramps."] }),
-    buildLocation(17, { name: "Bureau of Engraving and Printing", category: "Museum", lat: 32.8360, lng: -97.3385, address: "9000 Blue Mound Rd, Fort Worth, TX 76131", ageGroups: ["Kids", "Teens"], price: "Free", hours: { Tue: "08:30-17:30", Wed: "08:30-17:30", Thu: "08:30-17:30", Fri: "08:30-17:30", Sat:"Closed", Sun:"Closed", Mon:"Closed" }, rating: 4.6, reviewCount: 600, reviewHighlights: ["See money being printed!", "Very educational", "Free tour"], tips: ["One of only two 'money factories' in the US.", "Self-guided tour along an elevated walkway.", "Great for school-aged kids interested in how things are made."] }),
-    buildLocation(18, { name: "River Legacy Parks", category: "Park", lat: 32.7758, lng: -97.1350, address: "701 NW Green Oaks Blvd, Arlington, TX 76006", ageGroups: ["Toddlers", "Kids", "Teens"], price: "Free", hours: { all: "05:00-22:00" }, rating: 4.8, reviewCount: 1000, reviewHighlights: ["Amazing nature trails", "Huge playgrounds", "Science Center is cool"], tips: ["The park has multiple playgrounds; some are more hidden than others.", "The Living Science Center is a great indoor option (has an admission fee).", "Excellent for paved trail bike rides."] }),
-    buildLocation(19, { name: "Levitt Pavilion for the Performing Arts", category: "Outdoors", lat: 32.7338, lng: -97.1086, address: "100 W Abram St, Arlington, TX 76010", ageGroups: ["Toddlers", "Kids", "Teens"], price: "Free", hours: { all: "Varies" }, rating: 4.7, reviewCount: 450, reviewHighlights: ["Free concerts!", "Family-friendly atmosphere", "Bring your own chairs"], tips: ["Offers over 50 free outdoor concerts a year.", "Check their schedule online.", "Bring blankets, lawn chairs, and a cooler for a perfect evening."], events: [{title: "Family Movie Night: The Super Mario Bros. Movie", date: "Friday, Oct 24th at 8 PM", description: "Bring your blankets and enjoy a free screening under the stars.", cost: "Free"}] }),
-    buildLocation(20, { name: "Randol Mill Park", category: "Park", lat: 32.7634, lng: -97.0850, address: "1901 W Randol Mill Rd, Arlington, TX 76012", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "05:00-22:00" }, rating: 4.6, reviewCount: 550, reviewHighlights: ["Great duck pond", "Multiple playgrounds", "Nice walking trails"], tips: ["A classic city park with lots to do.", "The playground is partially shaded.", "Kids love feeding the ducks (bring birdseed, not bread!)."] }),
-    buildLocation(21, { name: "Chandor Gardens", category: "Outdoors", lat: 32.7618, lng: -97.7940, address: "711 W Lee Ave, Weatherford, TX 76086", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { Admission: 5 }, hours: { Mon:"09:00-17:00", Tue:"09:00-17:00", Sat:"09:00-17:00", Sun:"12:00-16:00", Wed:"Closed", Thu:"Closed", Fri:"Closed" }, rating: 4.8, reviewCount: 300, reviewHighlights: ["Hidden gem", "Beautiful and tranquil", "Fun to explore"], tips: ["A unique garden blending Chinese architecture with English gardens.", "Not a playground, but great for a peaceful walk with older kids.", "Lots of little nooks and crannies to discover."] }),
-    buildLocation(22, { name: "Clark Gardens", category: "Outdoors", lat: 32.6180, lng: -97.9015, address: "567 Maddux Rd, Weatherford, TX 76088", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$", ticketInfo: { Adult: 9, Child: 5 }, hours: { Mon:"08:00-17:00", Tue:"08:00-17:00", Wed:"08:00-17:00", Thu:"08:00-17:00", Fri:"08:00-17:00", Sat:"08:00-17:00", Sun:"10:00-17:00"}, rating: 4.7, reviewCount: 400, reviewHighlights: ["G-scale model trains!", "Beautiful flowers", "Lots of space to run"], tips: ["The model train exhibit is a huge draw for kids.", "Check for their events like the Monarch butterfly release.", "Has some peacocks roaming the grounds."] }),
-    buildLocation(23, { name: "Holland Lake Park", category: "Park", lat: 32.7510, lng: -97.8080, address: "1419 Holland Lake Dr, Weatherford, TX 76086", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "06:00-22:00" }, rating: 4.6, reviewCount: 350, reviewHighlights: ["Nice playground", "Disc golf course", "Fishing pier"], tips: ["A lovely community park.", "The playground is well-maintained.", "Good for a quick stop to let kids burn off energy."] }),
-    buildLocation(24, { name: "The National Vietnam War Museum", category: "Museum", lat: 32.6375, lng: -97.8931, address: "12685 E US Highway 180, Mineral Wells, TX 76067", ageGroups: ["Teens"], price: "$", ticketInfo: { Admission: 5, note: "donation suggested" }, hours: { Wed:"09:00-17:00", Thu:"09:00-17:00", Fri:"09:00-17:00", Sat:"09:00-17:00", Sun:"12:00-16:00", Mon:"Closed", Tue:"Closed"}, rating: 4.8, reviewCount: 250, reviewHighlights: ["Very moving", "Lots of historical vehicles", "Important history lesson"], tips: ["Best for older kids and teens interested in history.", "Features a half-scale replica of the Vietnam Veterans Memorial wall.", "Mostly outdoors, so check the weather."] }),
-    buildLocation(25, { name: "National Videogame Museum", category: "Museum", lat: 33.0475, lng: -96.8277, address: "8004 Dallas Pkwy, Frisco, TX 75034", ageGroups: ["Kids", "Teens"], price: "$$", ticketInfo: { Adult: 12, Child: 10 }, hours: { Tue: "10:00-17:00", Wed: "10:00-17:00", Thu: "10:00-17:00", Fri: "10:00-20:00", Sat: "10:00-20:00", Sun: "12:00-17:00", Mon:"Closed"}, rating: 4.7, reviewCount: 700, reviewHighlights: ["Retro arcade is awesome", "Nostalgia overload", "Interactive history"], tips: ["You get tokens for the arcade with admission.", "Great for parents who grew up with classic Nintendo and Atari.", "The giant Pong game is a family favorite."] }),
-    buildLocation(26, { name: "Heard Natural Science Museum & Wildlife Sanctuary", category: "Outdoors", lat: 33.1670, lng: -96.6110, address: "1 Nature Pl, McKinney, TX 75069", ageGroups: ["Kids", "Teens"], price: "$$", ticketInfo: { Adult: 12, Child: 9 }, hours: { Tue: "09:00-17:00", Wed: "09:00-17:00", Thu: "09:00-17:00", Fri: "09:00-17:00", Sat: "09:00-17:00", Sun: "13:00-17:00", Mon:"Closed"}, rating: 4.6, reviewCount: 650, reviewHighlights: ["Animatronic dinosaurs", "Butterfly garden", "Nice nature trails"], tips: ["Check the schedule for the Dinosaurs Live! exhibit.", "The butterfly house is beautiful.", "Wear good walking shoes for the trails."] }),
-    buildLocation(27, { name: "Grapevine Vintage Railroad", category: "Attraction", lat: 32.9420, lng: -97.0768, address: "705 S Main St, Grapevine, TX 76051", ageGroups: ["Toddlers", "Kids"], price: "$$$", ticketInfo: { Adult: 20, Child: 16, note: "prices vary" }, hours: { all: "Varies" }, rating: 4.5, reviewCount: 550, reviewHighlights: ["Authentic vintage train", "Fun for kids", "Special events are great"], tips: ["Check for special event rides like the North Pole Express at Christmas.", "The ride to the Fort Worth Stockyards is a popular trip.", "Book tickets far in advance for holidays."] }),
-    buildLocation(28, { name: "LEGOLAND Discovery Center", category: "Indoor", lat: 32.9602, lng: -97.0425, address: "3000 Grapevine Mills Pkwy, Grapevine, TX 76051", ageGroups: ["Toddlers", "Kids"], price: "$$$", ticketInfo: { General: 24.99, note: "online price" }, hours: { all: "10:00-17:00" }, rating: 4.3, reviewCount: 900, reviewHighlights: ["Best for younger kids", "Can get very crowded", "Rides and 4D movie"], tips: ["Located inside Grapevine Mills mall.", "Best for kids 3-10.", "Buy tickets online to guarantee entry as it often sells out."] }),
-    buildLocation(29, { name: "Sea Life Grapevine Aquarium", category: "Museum", lat: 32.9605, lng: -97.0420, address: "3000 Grapevine Mills Pkwy, Grapevine, TX 76051", ageGroups: ["Toddlers", "Kids"], price: "$$", ticketInfo: { Adult: 23.99, Child: 16.99 }, hours: { all: "10:00-17:00" }, rating: 4.4, reviewCount: 850, reviewHighlights: ["360-degree ocean tunnel", "Interactive rockpools", "Good for a couple hours"], tips: ["Located across from LEGOLAND in the mall.", "Combo tickets are available.", "The ocean tunnel is the main attraction."] }),
-    buildLocation(30, { name: "NRH2O Family Water Park", category: "Waterpark", lat: 32.8368, lng: -97.2185, address: "9001 26 Blvd, North Richland Hills, TX 76180", ageGroups: ["Kids", "Teens"], price: "$$", ticketInfo: { General: 32.99 }, hours: { all: "Varies (Seasonal)" }, rating: 4.6, reviewCount: 750, reviewHighlights: ["Clean and fun", "Not too overwhelming", "Free cooler policy"], tips: ["A smaller, more manageable water park than the giant ones.", "You can bring your own coolers with food and drinks, which saves a lot of money.", "Check for discount days or twilight hours."] }),
-    buildLocation(31, { name: "Celebration Park", category: "Playground", lat: 33.1119, lng: -96.6789, address: "701 Angel Pkwy, Allen, TX 75002", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "08:00-22:00" }, rating: 4.8, reviewCount: 600, reviewHighlights: ["Massive playground", "Splash pad in summer", "Lots of fields"], tips: ["The playground is huge and castle-themed.", "The sprayground is one of the best free ones in DFW.", "Can be very popular on weekends."] }),
-    buildLocation(32, { name: "Kimbell Art Museum", category: "Museum", lat: 32.7485, lng: -97.3649, address: "3333 Camp Bowie Blvd, Fort Worth, TX 76107", ageGroups: ["Teens"], price: "Free", hours: { Tue:"10:00-17:00", Wed:"10:00-17:00", Thu:"10:00-17:00", Fri:"12:00-20:00", Sat:"10:00-17:00", Sun:"12:00-17:00", Mon:"Closed" }, rating: 4.9, reviewCount: 500, reviewHighlights: ["World-class art collection", "Stunning architecture", "Free general admission"], tips: ["Permanent collection is free to view.", "A great 'intro to art' museum as it's small and high-quality.", "The Louis Kahn building is a masterpiece."] }),
-    buildLocation(33, { name: "The Shops at Clearfork", category: "Outdoors", lat: 32.7153, lng: -97.4124, address: "5188 Monahans Ave, Fort Worth, TX 76109", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "Varies" }, rating: 4.5, reviewCount: 400, reviewHighlights: ["Great green space", "Splash pad", "High-end shopping"], tips: ["The central green area has a splash pad and is perfect for letting kids run around while parents relax.", "Many restaurants have patios overlooking the green.", "Check for seasonal events."] }),
-    buildLocation(34, { name: "Parr Park", category: "Playground", lat: 32.9150, lng: -97.0945, address: "3010 Parr Ln, Grapevine, TX 76051", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "06:00-22:00" }, rating: 4.7, reviewCount: 350, reviewHighlights: ["Huge playground area", "Sprayground is fun", "Shaded spots"], tips: ["The playground has a unique, modern design.", "The sprayground is a popular summer destination.", "Lots of walking trails connect to the park."] }),
-    buildLocation(35, { name: "Fritz Park Petting Farm", category: "Attraction", lat: 32.8468, lng: -96.9458, address: "312 E Vilbig St, Irving, TX 75060", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "Varies (Seasonal)" }, rating: 4.6, reviewCount: 300, reviewHighlights: ["Free admission", "See farm animals", "Only open in summer"], tips: ["Only open June and July.", "A simple, old-fashioned petting farm.", "Great for a short visit with little ones."] }),
-    buildLocation(36, { name: "Epic Waters Indoor Waterpark", category: "Waterpark", lat: 32.6848, lng: -96.9930, address: "2970 Epic Place, Grand Prairie, TX 75052", ageGroups: ["Kids", "Teens"], price: "$$", ticketInfo: { General: 34, note: "prices vary" }, hours: { all: "Varies" }, rating: 4.4, reviewCount: 950, reviewHighlights: ["Open year-round", "Fun slides", "Can get very loud"], tips: ["Being indoors is a huge plus for rainy or cold days.", "The retractable roof opens on nice days.", "Look for deals on their website, especially for non-peak times."] }),
-    buildLocation(37, { name: "Fort Worth Water Gardens", category: "Park", lat: 32.7483, lng: -97.3308, address: "1502 Commerce St, Fort Worth, TX 76102", ageGroups: ["Kids", "Teens"], price: "Free", hours: { all: "07:00-22:00" }, rating: 4.7, reviewCount: 1200, reviewHighlights: ["Unique and futuristic", "Cool to walk through", "Great for photos"], tips: ["An urban oasis with amazing concrete and water structures.", "The 'active pool' is the main attraction where you can walk down the steps surrounded by cascading water.", "Keep a close eye on small children."] }),
-    buildLocation(38, { name: "Stockyards National Historic District", category: "Attraction", lat: 32.7885, lng: -97.3480, address: "131 E Exchange Ave, Fort Worth, TX 76164", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { 'Cattle Drive': 'Free', Maze: 6 }, hours: { all: "Varies" }, rating: 4.6, reviewCount: 2000, reviewHighlights: ["Twice-daily cattle drive", "Old West feel", "Lots of shops"], tips: ["The cattle drive is the main event for families, check the times online.", "Can be touristy, but kids love the cowboy atmosphere.", "The Cowtown Cattlepen Maze is a fun add-on."] }),
-    buildLocation(39, { name: "Burger's Lake", category: "Waterpark", lat: 32.7208, lng: -97.4691, address: "1200 Meandering Rd, Fort Worth, TX 76114", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { Admission: 20, note: "cash only" }, hours: { all: "Varies (Seasonal)" }, rating: 4.5, reviewCount: 600, reviewHighlights: ["Old-school swimming hole", "Picnic areas and grills", "Spring-fed lake"], tips: ["A 30-acre park with a spring-fed lake for swimming.", "Features slides, a trapeze, and diving boards.", "Cash only, so come prepared."] }),
-    buildLocation(40, { name: "Benbrook Lake", category: "Outdoors", lat: 32.6583, lng: -97.4578, address: "Multiple access points", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { 'Park Entry': 5, note: "per vehicle" }, hours: { all: "Varies" }, rating: 4.4, reviewCount: 400, reviewHighlights: ["Good for swimming", "Boating and fishing", "Campgrounds available"], tips: ["Several parks line the lake with swim beaches and picnic areas.", "Mustang Park is a popular spot for families.", "Check water levels before you go."] }),
-    buildLocation(41, { name: "Amon Carter Museum of American Art", category: "Museum", lat: 32.7475, lng: -97.3675, address: "3501 Camp Bowie Blvd, Fort Worth, TX 76107", ageGroups: ["Teens"], price: "Free", hours: { Tue:"10:00-17:00", Wed:"10:00-17:00", Thu:"10:00-20:00", Fri:"10:00-17:00", Sat:"10:00-17:00", Sun:"12:00-17:00", Mon:"Closed" }, rating: 4.8, reviewCount: 450, reviewHighlights: ["Great American West art", "Beautiful building", "Always free"], tips: ["Focuses on American art, especially works of the American West by Remington and Russell.", "The photography collection is excellent.", "The view of downtown Fort Worth from the front porch is spectacular."] }),
-    buildLocation(42, { name: "Texas Civil War Museum", category: "Museum", lat: 32.7214, lng: -97.4608, address: "760 Jim Wright Fwy, White Settlement, TX 76108", ageGroups: ["Teens"], price: "$", ticketInfo: { Admission: 7 }, hours: { Tue: "10:00-17:00", Wed: "10:00-17:00", Thu: "10:00-17:00", Fri: "10:00-17:00", Sat: "10:00-17:00", Sun: "Closed", Mon: "Closed" }, rating: 4.7, reviewCount: 300, reviewHighlights: ["Extensive collection", "Knowledgeable staff", "Focus on Texas history"], tips: ["Largest Civil War museum west of the Mississippi.", "Includes artifacts from both Union and Confederate sides.", "Good for a deep dive into history."] }),
-    buildLocation(43, { name: "Flight Deck Trampoline Park", category: "Indoor", lat: 32.7303, lng: -97.1856, address: "7751 Scott St, Fort Worth, TX 76108", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { '1 Hour': 16, '2 Hours': 26 }, hours: { all: "Varies" }, rating: 4.4, reviewCount: 500, reviewHighlights: ["Great for burning energy", "Dodgeball is fun", "Book jump time online"], tips: ["Wear athletic clothing.", "They have special jump times for toddlers.", "Can get crowded, so booking ahead is recommended."] }),
-    buildLocation(44, { name: "The Modern Art Museum of Fort Worth", category: "Museum", lat: 32.7485, lng: -97.3633, address: "3200 Darnell St, Fort Worth, TX 76107", ageGroups: ["Teens"], price: "$", ticketInfo: { Adult: 16, 'Free on Fridays': 'True' }, hours: { Tue:"10:00-17:00", Wed:"10:00-17:00", Thu:"10:00-17:00", Fri:"10:00-20:00", Sat:"10:00-17:00", Sun:"10:00-17:00", Mon:"Closed" }, rating: 4.7, reviewCount: 600, reviewHighlights: ["Amazing architecture", "Interesting collection", "Free on Fridays"], tips: ["Admission is free on Fridays.", "The building itself, designed by Tadao Ando, is a work of art.", "Great for teens interested in contemporary art."] }),
-    buildLocation(45, { name: "Main Event", category: "Indoor", lat: 32.8398, lng: -97.1070, address: "Multiple DFW Locations", ageGroups: ["Kids", "Teens"], price: "$$", ticketInfo: { 'Varies by activity': 'See website' }, hours: { all: "Varies" }, rating: 4.2, reviewCount: 1100, reviewHighlights: ["Bowling, laser tag, arcade", "Something for everyone", "Can get expensive"], tips: ["Look for weekday deals or all-access passes.", "Good for groups or birthday parties.", "The food is standard arcade fare."] }),
-    buildLocation(46, { name: "D-BAT", category: "Attraction", lat: 32.9620, lng: -97.2348, address: "Multiple DFW Locations", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { 'Cage Rental': 20, note: "prices vary" }, hours: { all: "Varies" }, rating: 4.6, reviewCount: 250, reviewHighlights: ["Batting cages", "Great for practice", "Clean facility"], tips: ["For the baseball or softball-loving kid.", "You can rent cages by the half-hour or hour.", "Offers private lessons as well."] }),
-    buildLocation(47, { name: "Eagle Mountain Lake Park", category: "Park", lat: 32.8833, lng: -97.4794, address: "11601 Morris Dido Newark Rd, Fort Worth, TX 76179", ageGroups: ["Kids", "Teens"], price: "Free", hours: { all: "08:00-20:00" }, rating: 4.7, reviewCount: 500, reviewHighlights: ["Great hiking trails", "Beautiful lake views", "Can be rocky"], tips: ["More of a hiking spot than a playground park.", "The trails offer some of the best views in the DFW area.", "Wear sturdy shoes."] }),
-    buildLocation(48, { name: "Dinosaur Valley State Park", category: "Outdoors", lat: 32.2514, lng: -97.8169, address: "1629 Park Rd 59, Glen Rose, TX 76043", ageGroups: ["Kids", "Teens"], price: "$", ticketInfo: { Adult: 7, 'Child 12 & Under': 0 }, hours: { all: "08:00-17:00" }, rating: 4.7, reviewCount: 1300, reviewHighlights: ["Real dinosaur tracks!", "River is fun to play in", "Check track conditions"], tips: ["A bit of a drive, but worth it.", "You can walk in real dinosaur footprints in the Paluxy River bed.", "Call ahead or check their Facebook page to ensure the tracks are visible and not covered by murky water."] }),
-    buildLocation(49, { name: "Fossil Rim Wildlife Center", category: "Attraction", lat: 32.2598, lng: -97.8769, address: "2299 Co Rd 2008, Glen Rose, TX 76043", ageGroups: ["Toddlers", "Kids", "Teens"], price: "$$", ticketInfo: { General: 29.95, note: "prices vary" }, hours: { all: "08:30-16:30" }, rating: 4.8, reviewCount: 1500, reviewHighlights: ["Feed animals from your car", "Giraffes are amazing", "Book tickets in advance"], tips: ["A drive-through safari experience.", "Buy a bag of animal feed at the entrance.", "The giraffes will stick their heads right in your car!"] }),
-    buildLocation(50, { name: "Granbury City Beach Park", category: "Park", lat: 32.4400, lng: -97.7850, address: "505 E Pearl St, Granbury, TX 76048", ageGroups: ["Toddlers", "Kids"], price: "Free", hours: { all: "07:00-22:00" }, rating: 4.5, reviewCount: 400, reviewHighlights: ["Nice little beach", "Spray park is great", "Right off the town square"], tips: ["A sandy beach on Lake Granbury.", "Has a small spray park for kids.", "A great way to cool off after exploring the historic Granbury square."] })
-];
+// Fallback images for locations not in the map
+export const defaultImages: LocationImages = {
+  main: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+  gallery: [
+    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1581093588401-fbb62a02f120?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=800&h=600&fit=crop"
+  ]
+};
+
+// Helper function to get images for a location
+export function getLocationImages(locationId: number): LocationImages {
+  return locationImageMap[locationId] || defaultImages;
+}
