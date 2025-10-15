@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Location, FilterState } from './types';
 import { locations as allLocations } from './constants';
@@ -6,7 +5,13 @@ import Map from './components/Map';
 import Sidebar from './components/Sidebar';
 import LocationModal from './components/LocationModal';
 import MultiStopPlannerModal from './components/MultiStopPlannerModal';
+import SavedItinerariesModal from './components/SavedItinerariesModal';
 import { PanelsLeftBottomIcon } from './components/Icons';
+
+// Bookmark icon component
+const BookmarkIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+);
 
 function App() {
   const [locations] = useState<Location[]>(allLocations);
@@ -22,6 +27,7 @@ function App() {
 
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [isMultiStopModalOpen, setMultiStopModalOpen] = useState(false);
+  const [isSavedItinerariesOpen, setSavedItinerariesOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (localStorage.getItem('theme') as 'light' | 'dark') || 'light';
@@ -153,6 +159,15 @@ function App() {
         </button>
       )}
 
+      {/* Saved Itineraries Button - Floating */}
+      <button
+        onClick={() => setSavedItinerariesOpen(true)}
+        className="fixed bottom-6 right-6 z-20 p-4 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full shadow-lg text-white hover:from-violet-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-110"
+        title="View saved itineraries"
+      >
+        <BookmarkIcon />
+      </button>
+
       {selectedLocation && (
         <LocationModal 
           location={selectedLocation} 
@@ -165,6 +180,12 @@ function App() {
         <MultiStopPlannerModal 
           locations={locations}
           onClose={() => setMultiStopModalOpen(false)}
+        />
+      )}
+
+      {isSavedItinerariesOpen && (
+        <SavedItinerariesModal 
+          onClose={() => setSavedItinerariesOpen(false)}
         />
       )}
     </>

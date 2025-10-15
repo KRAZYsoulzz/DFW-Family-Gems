@@ -10,6 +10,23 @@ interface MultiStopPlannerModalProps {
 const MultiStopItineraryResult: React.FC<{ htmlContent: string, options: any, locations: Location[] }> = ({ htmlContent, options, locations }) => {
     const itineraries = htmlContent.split('###').slice(1);
 
+    const saveItinerary = (title: string, content: string) => {
+        const saved = localStorage.getItem('savedItineraries');
+        const existing = saved ? JSON.parse(saved) : [];
+        
+        const newItinerary = {
+            id: Date.now().toString(),
+            title: title,
+            content: content,
+            savedAt: new Date().toISOString(),
+            checklist: {}
+        };
+        
+        existing.push(newItinerary);
+        localStorage.setItem('savedItineraries', JSON.stringify(existing));
+        alert('Itinerary saved! View it in "My Itineraries"');
+    };
+
     return (
         <div>
             {itineraries.map((itinerary, index) => {
@@ -51,7 +68,16 @@ const MultiStopItineraryResult: React.FC<{ htmlContent: string, options: any, lo
 
                 return (
                     <div key={index} className="multi-itinerary-result border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-4 bg-white dark:bg-gray-800">
-                        <h3 className="text-xl font-bold text-teal-600 dark:text-teal-400 mb-2">{title}</h3>
+                        <div className="flex items-start justify-between mb-2">
+                            <h3 className="text-xl font-bold text-teal-600 dark:text-teal-400 flex-grow">{title}</h3>
+                            <button
+                                onClick={() => saveItinerary(title, bodyContent)}
+                                className="ml-4 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                <span>Save</span>
+                            </button>
+                        </div>
                         <div dangerouslySetInnerHTML={{ __html: formattedBody }} className="text-gray-600 dark:text-gray-300 space-y-2" />
                         {totalPrice > 0 ? (
                            <div className="price-estimate mt-3 inline-block bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 text-sm font-medium px-3 py-1 rounded-full">Est. Activity Cost: ~${totalPrice.toFixed(2)}</div>
@@ -135,7 +161,7 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <header className="p-4 border-b dark:border-gray-700 flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-3">
-            <WandSparklesIcon className="text-indigo-500" />
+            <SparkleIcon className="text-indigo-500 w-6 h-6" />
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Plan Your Perfect DFW Day</h2>
           </div>
           <button onClick={onClose} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full hover:text-gray-800 dark:hover:text-gray-200 transition-colors">

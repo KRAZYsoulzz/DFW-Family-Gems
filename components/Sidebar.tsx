@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Location, FilterState } from '../types';
 import LocationList from './LocationList';
 import FilterPanel from './FilterPanel';
 import ThemeToggle from './ThemeToggle';
-import { GemIcon, CrosshairIcon, XIcon, WandSparklesIcon, MapPinFilledIcon } from './Icons';
+import { GemIcon, CrosshairIcon, XIcon, SparkleIcon, MapPinFilledIcon } from './Icons';
 
 interface SidebarProps {
   locations: Location[];
@@ -63,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ locations, onLocationSelect, filters,
 
       <div className="p-4 border-b border-gray-200 dark:border-gray-700 shrink-0 sticky top-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm z-20">
         <button onClick={onPlanMyDayClick} className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-violet-500 to-indigo-500 text-white font-bold py-3 px-4 rounded-lg hover:from-violet-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-105 shadow-md">
-          <WandSparklesIcon />
+          <SparkleIcon className="w-5 h-5" />
           <span>Plan My Day with AI</span>
         </button>
       </div>
