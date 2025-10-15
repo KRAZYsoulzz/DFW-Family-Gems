@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { XIcon, CheckIcon } from './Icons';
+import { XIcon } from './Icons';
 
 interface SavedItinerary {
   id: string;
