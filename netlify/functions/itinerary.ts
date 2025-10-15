@@ -13,7 +13,7 @@ export const handler: Handler = async (event) => {
 
     const gen = async (sys: string, usr: string) => {
       const payload = { contents: [{ role: "user", parts: [{ text: sys + "\n\n" + usr }]}] };
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
       const resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!resp.ok) throw new Error(await resp.text());
       const data = await resp.json();
@@ -56,7 +56,7 @@ Keep it practical and fun!`;
 **Family Details:**
 - ${numAdults} adult(s) and ${numKids} kid(s)
 - Time available: ${timeAvailable}
-- Activity budget: ${budget}
+- Activity budget: $${budget}
 - Meal preference: ${mealPreference}
 
 **Available Locations:**
