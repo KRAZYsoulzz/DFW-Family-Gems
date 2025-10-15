@@ -107,13 +107,15 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
     timeAvailable: 'Half-day',
     budget: 50,
     mealType: 'none',
-    mealPrice: '$$',
+    mealPrice: '$',
+    date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+    preferences: '',
   });
   const [results, setResults] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     const numValue = e.target.type === 'number' ? parseFloat(value) : value;
     setOptions(prev => ({...prev, [id]: numValue}));
@@ -134,9 +136,11 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
         const promptData = {
             numAdults: options.numAdults,
             numKids: options.numKids,
+            date: options.date,
             timeAvailable: options.timeAvailable,
             budget: options.budget,
-            mealPreference: mealPreference
+            mealPreference: mealPreference,
+            preferences: options.preferences
         };
 
         // Call the netlify function with the enhanced prompt
@@ -192,6 +196,10 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
                     </div>
                 </div>
                 <div>
+                  <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">When are you planning to visit?</label>
+                  <input type="date" id="date" value={options.date} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-700 dark:text-gray-200"/>
+                </div>
+                <div>
                   <label htmlFor="timeAvailable" className="block text-sm font-medium text-gray-700 dark:text-gray-300">How much time do you have?</label>
                   <select id="timeAvailable" value={options.timeAvailable} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-700 dark:text-gray-200">
                       <option value="2-3 hours">Quick Trip (2-3 hours)</option>
@@ -218,11 +226,22 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
                       {options.mealType !== 'none' && (
                         <select id="mealPrice" value={options.mealPrice} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-700 dark:text-gray-200">
                             <option value="$">$ (under $15/person)</option>
-                            <option value="$$">$$ ($15-$30/person)</option>
-                            <option value="$$$">$$$ ($30+/person)</option>
+                            <option value="$">$ ($15-$30/person)</option>
+                            <option value="$$">$$ ($30+/person)</option>
                         </select>
                       )}
                   </div>
+                </div>
+                <div>
+                  <label htmlFor="preferences" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Any preferences?</label>
+                  <textarea 
+                    id="preferences" 
+                    value={options.preferences} 
+                    onChange={handleChange} 
+                    rows={3}
+                    placeholder="e.g., 'avoid crowds', 'loves dinosaurs', 'need wheelchair access', 'prefers shaded areas'"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400"
+                  />
                 </div>
               </div>
             </>
