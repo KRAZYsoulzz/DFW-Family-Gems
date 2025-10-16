@@ -1,4 +1,4 @@
-    // Multi-stop itinerary with options
+// Multi-stop itinerary with options
     if (multiStopOptions && Array.isArray(locations) && locations.length > 0) {
       const { numAdults, numKids, timeAvailable, budget, mealPreference, date, preferences } = multiStopOptions;
       

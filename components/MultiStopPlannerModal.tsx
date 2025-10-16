@@ -226,8 +226,8 @@ const MultiStopPlannerModal: React.FC<MultiStopPlannerModalProps> = ({ locations
                       {options.mealType !== 'none' && (
                         <select id="mealPrice" value={options.mealPrice} onChange={handleChange} className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-white dark:bg-gray-700 dark:text-gray-200">
                             <option value="$">$ (under $15/person)</option>
-                            <option value="$">$ ($15-$30/person)</option>
-                            <option value="$$">$$ ($30+/person)</option>
+                            <option value="$$">$$ ($15-$30/person)</option>
+                            <option value="$$$">$$$ ($30+/person)</option>
                         </select>
                       )}
                   </div>
