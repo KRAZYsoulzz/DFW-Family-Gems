@@ -17,9 +17,14 @@ const CheckIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 6 9 17l-5-5"/></svg>
 );
 
+const DownloadIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+);
+
 const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }) => {
   const [savedItineraries, setSavedItineraries] = useState<SavedItinerary[]>([]);
   const [selectedItinerary, setSelectedItinerary] = useState<SavedItinerary | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     loadSavedItineraries();
@@ -88,6 +93,74 @@ const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }
       .join('');
   };
 
+  const exportAsImage = async () => {
+    if (!selectedItinerary) return;
+    
+    setIsExporting(true);
+    
+    try {
+      // Import html2canvas dynamically
+      const html2canvas = (await import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm')).default;
+      
+      // Create a temporary container for the export
+      const exportContainer = document.createElement('div');
+      exportContainer.style.position = 'fixed';
+      exportContainer.style.left = '-9999px';
+      exportContainer.style.top = '0';
+      exportContainer.style.width = '800px';
+      exportContainer.style.padding = '40px';
+      exportContainer.style.backgroundColor = '#ffffff';
+      exportContainer.style.fontFamily = 'Inter, sans-serif';
+      
+      // Build the export content
+      exportContainer.innerHTML = `
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; color: white; margin-bottom: 20px;">
+          <h1 style="font-size: 32px; font-weight: bold; margin: 0 0 10px 0;">DFW Family Gems</h1>
+          <h2 style="font-size: 24px; font-weight: 600; margin: 0;">${selectedItinerary.title}</h2>
+          <p style="font-size: 14px; opacity: 0.9; margin: 10px 0 0 0;">Saved on ${new Date(selectedItinerary.savedAt).toLocaleDateString()}</p>
+        </div>
+        
+        <div style="color: #374151; line-height: 1.6;">
+          ${formatContent(selectedItinerary.content)}
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
+          <p>Plan your perfect DFW family adventure • dfwfamilygems.com</p>
+        </div>
+      `;
+      
+      document.body.appendChild(exportContainer);
+      
+      // Generate canvas
+      const canvas = await html2canvas(exportContainer, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+      
+      // Convert to blob and download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `${selectedItinerary.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.jpg`;
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+        
+        document.body.removeChild(exportContainer);
+        setIsExporting(false);
+      }, 'image/jpeg', 0.95);
+      
+    } catch (error) {
+      console.error('Error exporting image:', error);
+      alert('Failed to export image. Please try again.');
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
       <div 
@@ -131,9 +204,22 @@ const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
               {selectedItinerary ? selectedItinerary.title : 'Saved Itineraries'}
             </h2>
-            <button onClick={onClose} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-              <XIcon />
-            </button>
+            <div className="flex items-center space-x-2">
+              {selectedItinerary && (
+                <button
+                  onClick={exportAsImage}
+                  disabled={isExporting}
+                  className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Save as image"
+                >
+                  <DownloadIcon />
+                  <span>{isExporting ? 'Exporting...' : 'Save as Image'}</span>
+                </button>
+              )}
+              <button onClick={onClose} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+                <XIcon />
+              </button>
+            </div>
           </header>
 
           <div className="flex-grow overflow-y-auto p-6 custom-scrollbar">
