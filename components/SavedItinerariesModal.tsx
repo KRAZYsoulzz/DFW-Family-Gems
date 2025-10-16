@@ -164,82 +164,85 @@ const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
       <div 
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex animate-scale-in"
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col md:flex-row animate-scale-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Sidebar with saved itineraries list */}
-        <div className="w-64 border-r dark:border-gray-700 flex flex-col">
+        <div className="w-full md:w-64 border-b md:border-b-0 md:border-r dark:border-gray-700 flex flex-col max-h-48 md:max-h-full">
           <div className="p-4 border-b dark:border-gray-700">
             <h3 className="font-bold text-gray-800 dark:text-gray-100">My Itineraries</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{savedItineraries.length} saved</p>
           </div>
           
-          <div className="flex-grow overflow-y-auto custom-scrollbar">
+          <div className="flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar">
             {savedItineraries.length === 0 ? (
               <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
                 No saved itineraries yet. Create one from the planner!
               </div>
             ) : (
-              savedItineraries.map(itinerary => (
-                <div
-                  key={itinerary.id}
-                  className={`p-3 border-b dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 ${selectedItinerary?.id === itinerary.id ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''}`}
-                  onClick={() => setSelectedItinerary(itinerary)}
-                >
-                  <div className="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate">
-                    {itinerary.title}
+              <div className="flex md:flex-col gap-2 p-2 md:p-0">
+                {savedItineraries.map(itinerary => (
+                  <div
+                    key={itinerary.id}
+                    className={`p-3 border md:border-b md:border-x-0 md:border-t-0 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded md:rounded-none whitespace-nowrap md:whitespace-normal flex-shrink-0 ${selectedItinerary?.id === itinerary.id ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''}`}
+                    onClick={() => setSelectedItinerary(itinerary)}
+                  >
+                    <div className="font-semibold text-sm text-gray-800 dark:text-gray-100 truncate">
+                      {itinerary.title}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {new Date(itinerary.savedAt).toLocaleDateString()}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {new Date(itinerary.savedAt).toLocaleDateString()}
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>
 
         {/* Main content area */}
-        <div className="flex-grow flex flex-col">
-          <header className="p-4 border-b dark:border-gray-700 flex items-center justify-between shrink-0">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+        <div className="flex-grow flex flex-col min-h-0">
+          <header className="p-3 md:p-4 border-b dark:border-gray-700 flex items-center justify-between shrink-0 flex-wrap gap-2">
+            <h2 className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100 truncate flex-shrink min-w-0">
               {selectedItinerary ? selectedItinerary.title : 'Saved Itineraries'}
             </h2>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 flex-shrink-0">
               {selectedItinerary && (
                 <button
                   onClick={exportAsImage}
                   disabled={isExporting}
-                  className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1.5 md:px-4 md:py-2 bg-teal-500 hover:bg-teal-600 text-white text-xs md:text-sm font-medium rounded-lg transition-colors flex items-center space-x-1 md:space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Save as image"
                 >
-                  <DownloadIcon />
-                  <span>{isExporting ? 'Exporting...' : 'Save as Image'}</span>
+                  <DownloadIcon className="w-3 h-3 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">{isExporting ? 'Exporting...' : 'Save as Image'}</span>
+                  <span className="sm:hidden">Save</span>
                 </button>
               )}
-              <button onClick={onClose} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-                <XIcon />
+              <button onClick={onClose} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full flex-shrink-0">
+                <XIcon className="w-5 h-5" />
               </button>
             </div>
           </header>
 
-          <div className="flex-grow overflow-y-auto p-6 custom-scrollbar">
+          <div className="flex-grow overflow-y-auto p-4 md:p-6 custom-scrollbar">
             {!selectedItinerary ? (
               <div className="text-center text-gray-500 dark:text-gray-400 py-12">
-                Select an itinerary from the sidebar to view details
+                Select an itinerary from the {window.innerWidth < 768 ? 'list above' : 'sidebar'} to view details
               </div>
             ) : (
               <>
                 {/* Itinerary Content */}
                 <div className="mb-6">
                   <div 
-                    className="prose dark:prose-invert max-w-none"
+                    className="prose dark:prose-invert max-w-none text-sm md:text-base"
                     dangerouslySetInnerHTML={{ __html: formatContent(selectedItinerary.content) }}
                   />
                 </div>
 
                 {/* Checklist */}
                 <div className="mt-8 border-t dark:border-gray-700 pt-6">
-                  <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Activity Checklist</h3>
+                  <h3 className="text-base md:text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">Activity Checklist</h3>
                   <div className="space-y-2">
                     {extractChecklistItems(selectedItinerary.content).map((item, idx) => {
                       const itemKey = `item-${idx}`;
@@ -248,9 +251,9 @@ const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }
                       return (
                         <label
                           key={itemKey}
-                          className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer group"
+                          className="flex items-start space-x-3 p-2 md:p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer group"
                         >
-                          <div className="relative flex items-center justify-center">
+                          <div className="relative flex items-center justify-center flex-shrink-0">
                             <input
                               type="checkbox"
                               checked={isChecked}
@@ -261,7 +264,7 @@ const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }
                               {isChecked && <CheckIcon className="w-4 h-4 text-white" />}
                             </div>
                           </div>
-                          <span className={`flex-grow text-sm ${isChecked ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                          <span className={`flex-grow text-xs md:text-sm ${isChecked ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
                             {item}
                           </span>
                         </label>
@@ -278,7 +281,7 @@ const SavedItinerariesModal: React.FC<SavedItinerariesModalProps> = ({ onClose }
                         deleteItinerary(selectedItinerary.id);
                       }
                     }}
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors"
+                    className="w-full md:w-auto px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors"
                   >
                     Delete Itinerary
                   </button>
