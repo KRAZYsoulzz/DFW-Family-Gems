@@ -25,7 +25,7 @@ function loadCache(): PhotoCache {
       return JSON.parse(cached);
     }
   } catch (e) {
-    console.error('Error loading photo cache:', e);
+    console.error('[Google Places] Error loading photo cache:', e);
   }
   return {};
 }
@@ -34,8 +34,9 @@ function loadCache(): PhotoCache {
 function saveCache(cache: PhotoCache): void {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+    console.log('[Google Places] Cache saved successfully');
   } catch (e) {
-    console.error('Error saving photo cache:', e);
+    console.error('[Google Places] Error saving photo cache:', e);
   }
 }
 
@@ -55,7 +56,7 @@ export async function fetchLocationPhotos(
   locationId: number,
   address: string
 ): Promise<string[]> {
-  console.log(`[Google Places] Attempting to fetch photos for: ${locationName}`);
+  console.log(`[Google Places] Fetching photos for: ${locationName} (ID: ${locationId})`);
   
   // Check cache first
   const cache = loadCache();
@@ -67,15 +68,17 @@ export async function fetchLocationPhotos(
   }
 
   if (!GOOGLE_PLACES_API_KEY) {
-    console.error('[Google Places] ✗ API key not set!');
+    console.error('[Google Places] ✗ API key not set! Set VITE_GOOGLE_PLACES_API_KEY in environment variables.');
     return ['/images/fallback.png', '/images/fallback.png', '/images/fallback.png'];
   }
 
-  console.log(`[Google Places] API Key found:`, GOOGLE_PLACES_API_KEY.substring(0, 10) + '...');
+  console.log(`[Google Places] API Key present: ${GOOGLE_PLACES_API_KEY.substring(0, 10)}...`);
 
   try {
     // Step 1: Search for the place using Text Search
     const searchUrl = `https://places.googleapis.com/v1/places:searchText`;
+    console.log(`[Google Places] Searching for: "${locationName} ${address}"`);
+    
     const searchResponse = await fetch(searchUrl, {
       method: 'POST',
       headers: {
@@ -89,21 +92,25 @@ export async function fetchLocationPhotos(
     });
 
     if (!searchResponse.ok) {
-      throw new Error(`Search failed: ${searchResponse.status}`);
+      const errorText = await searchResponse.text();
+      console.error(`[Google Places] ✗ Search failed (${searchResponse.status}):`, errorText);
+      throw new Error(`Search failed: ${searchResponse.status} - ${errorText}`);
     }
 
     const searchData = await searchResponse.json();
+    console.log(`[Google Places] Search response:`, searchData);
     
     if (!searchData.places || searchData.places.length === 0) {
-      console.warn(`No place found for ${locationName}`);
+      console.warn(`[Google Places] ✗ No place found for ${locationName}`);
       return ['/images/fallback.png', '/images/fallback.png', '/images/fallback.png'];
     }
 
     // Get the first (best match) place
     const place = searchData.places[0];
+    console.log(`[Google Places] Found place: ${place.displayName?.text || 'Unknown'}`);
     
     if (!place.photos || place.photos.length === 0) {
-      console.warn(`No photos found for ${locationName}`);
+      console.warn(`[Google Places] ✗ No photos found for ${locationName}`);
       return ['/images/fallback.png', '/images/fallback.png', '/images/fallback.png'];
     }
 
@@ -112,6 +119,8 @@ export async function fetchLocationPhotos(
       return getPhotoUrl(photo.name, 800);
     });
 
+    console.log(`[Google Places] ✓ Found ${photoUrls.length} photos for ${locationName}`);
+
     // Cache the results
     cache[cacheKey] = {
       photos: photoUrls,
@@ -119,27 +128,49 @@ export async function fetchLocationPhotos(
     };
     saveCache(cache);
 
-    console.log(`Fetched ${photoUrls.length} photos for ${locationName}`);
     return photoUrls;
 
   } catch (error) {
-    console.error(`Error fetching photos for ${locationName}:`, error);
+    console.error(`[Google Places] ✗ Error fetching photos for ${locationName}:`, error);
     return ['/images/fallback.png', '/images/fallback.png', '/images/fallback.png'];
   }
 }
 
 // Prefetch photos for all locations (call this on app startup)
 export async function prefetchAllLocationPhotos(locations: any[]): Promise<void> {
-  console.log('Starting to prefetch location photos...');
+  console.log('[Google Places] Starting to prefetch photos for all locations...');
   
-  // Fetch photos one at a time to avoid rate limiting
-  for (const location of locations) {
-    await fetchLocationPhotos(location.name, location.id, location.address);
-    // Small delay between requests to be nice to the API
-    await new Promise(resolve => setTimeout(resolve, 100));
+  // Check if we already have a complete cache
+  const cache = loadCache();
+  const cachedCount = Object.keys(cache).length;
+  console.log(`[Google Places] Current cache has ${cachedCount} locations`);
+  
+  if (cachedCount >= locations.length) {
+    console.log('[Google Places] Cache is complete, skipping prefetch');
+    return;
   }
   
-  console.log('Finished prefetching all location photos');
+  // Fetch photos one at a time to avoid rate limiting
+  let successCount = 0;
+  let failCount = 0;
+  
+  for (const location of locations) {
+    try {
+      const photos = await fetchLocationPhotos(location.name, location.id, location.address);
+      if (photos[0] !== '/images/fallback.png') {
+        successCount++;
+      } else {
+        failCount++;
+      }
+      // Small delay between requests to be nice to the API
+      await new Promise(resolve => setTimeout(resolve, 200));
+    } catch (error) {
+      console.error(`[Google Places] Failed to fetch photos for ${location.name}:`, error);
+      failCount++;
+    }
+  }
+  
+  console.log(`[Google Places] ✓ Prefetch complete: ${successCount} successful, ${failCount} failed`);
 }
 
 // Get photos from cache (synchronous, for immediate display)

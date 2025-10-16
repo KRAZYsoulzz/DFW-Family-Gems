@@ -44,24 +44,26 @@ function App() {
   // Prefetch Google Places photos on app load
   useEffect(() => {
     const fetchPhotos = async () => {
+      console.log('[App] Starting Google Places photo fetch...');
       try {
         await prefetchAllLocationPhotos(locations);
-        // Mark that we've completed the initial fetch
-        localStorage.setItem('photosFetched', 'true');
-        // Force a re-render after photos are loaded
-        window.location.reload();
+        console.log('[App] ✓ Photo fetch completed');
       } catch (error) {
-        console.error('Error prefetching photos:', error);
+        console.error('[App] ✗ Error prefetching photos:', error);
       }
     };
     
-    // Only fetch if we haven't already fetched in this session
-    const hasCache = localStorage.getItem('googlePlacesPhotos');
-    const hasFetched = localStorage.getItem('photosFetched');
-    
-    if (!hasCache && !hasFetched) {
-      fetchPhotos();
+    // Check if we have the API key
+    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
+    if (!apiKey) {
+      console.error('[App] ✗ VITE_GOOGLE_PLACES_API_KEY not found in environment variables!');
+      return;
     }
+    
+    console.log('[App] API key found, will fetch photos...');
+    
+    // Start fetching photos in the background
+    fetchPhotos();
   }, []);
 
   const toggleTheme = () => {
